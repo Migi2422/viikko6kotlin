@@ -1,12 +1,12 @@
 package com.example.cloudservices.viewModel
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.cloudservices.BuildConfig
-import com.example.cloudservices.data.model.*
-import com.example.cloudservices.data.remote.RetrofitInstance
+import com.example.cloudservices.data.model.ForecastListItem
+import com.example.cloudservices.data.model.WeatherResponse
+import com.example.cloudservices.data.repository.WeatherRepository
 import kotlinx.coroutines.launch
 
 data class WeatherUiState(
@@ -16,7 +16,7 @@ data class WeatherUiState(
     val weather: WeatherResponse? = null
 )
 
-class WeatherViewModel : ViewModel() {
+class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() {
 
     var uiState = mutableStateOf(WeatherUiState())
         private set
@@ -24,7 +24,6 @@ class WeatherViewModel : ViewModel() {
     private val _forecast = mutableStateOf<List<ForecastListItem>>(emptyList())
     val forecast: State<List<ForecastListItem>> = _forecast
 
-    // New state for map-specific weather data
     private val _mapWeather = mutableStateOf<WeatherResponse?>(null)
     val mapWeather: State<WeatherResponse?> = _mapWeather
 
@@ -47,10 +46,7 @@ class WeatherViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                val response = RetrofitInstance.api.getWeatherByCity(
-                    city = city,
-                    apiKey = BuildConfig.OPEN_WEATHER_API_KEY
-                )
+                val response = repository.getWeather(city)
 
                 uiState.value = uiState.value.copy(
                     isLoading = false,
@@ -74,28 +70,18 @@ class WeatherViewModel : ViewModel() {
     fun fetchDailyForecast(lat: Double, lon: Double) {
         viewModelScope.launch {
             try {
-                val response = RetrofitInstance.api.getDailyForecast(
-                    lat = lat,
-                    lon = lon,
-                    apiKey = BuildConfig.OPEN_WEATHER_API_KEY
-                )
+                val response = repository.getDailyForecast(lat, lon)
                 _forecast.value = response.list
             } catch (e: Exception) {
-                // Print error to logcat for debugging
                 println("Forecast error: ${e.message}")
             }
         }
     }
 
-    // New function to fetch weather for the map
     fun fetchWeatherForMap(lat: Double, lon: Double) {
         viewModelScope.launch {
             try {
-                val response = RetrofitInstance.api.getWeatherByCoordinates(
-                    lat = lat,
-                    lon = lon,
-                    apiKey = BuildConfig.OPEN_WEATHER_API_KEY
-                )
+                val response = repository.getWeatherByCoordinates(lat, lon)
                 _mapWeather.value = response
             } catch (e: Exception) {
                 println("Map weather error: ${e.message}")
