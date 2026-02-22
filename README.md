@@ -54,3 +54,5 @@ Data/
 - Repository laskee, onko tallennettu data alle 30 minuuttia vanhaa.
 - Jos on, data palautetaan Roomista ilman API-kutsua.
 - Jos ei ole, tehdään uusi API-kutsu ja tallennetaan tulos Roomiin.
+
+  Linkki videoon https://unioulu-my.sharepoint.com/:v:/g/personal/milauril24_students_oamk_fi/IQCjUdlRhsU2S6c4zM4kXyXOAaV7U4VmjGKxWmvB8ejsenQ?e=F2gV7g&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D
